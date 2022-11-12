@@ -43,6 +43,13 @@ module.exports = {
             err ?  res.send(err) : res.json(results);
          },[req.params.id])
     },
+    getOneByAdress : (req,res)=> {
+
+        residence.getOne((err,results)=>{
+            err ?  res.send(err) : res.json(results);
+         },[req.params.adress])
+    },
+
 
 
 }
