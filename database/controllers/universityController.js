@@ -42,6 +42,13 @@ const university = require('../models/universityModel.js')
          },[req.params.id])
     },
 
+    getOneByAdress: (req,res)=> {
+
+        university.getOne((err,results)=>{
+            err ?  res.send(err) : res.json(results);
+         },[req.params.adress])
+    },
+
 
 
 
