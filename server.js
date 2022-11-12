@@ -6,14 +6,18 @@ const connection = require('./database/index');
 
 
 
-const studentsRoute=require('./database/routes/studentRoute');
+const studentsRoute=require('./database/routes/studentRoutes')
+const CommentRoutes=require('./database/routes/commentsRoutes')
 const ownerRoute = require('./database/routes/homeOwnerRoute');
 
 app.use(express.json())
 app.use(cors())
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser())
-app.use('/student',studentsRoute);
+
+
+app.use('/student',studentsRoute)
+app.use('/comment',CommentRoutes)
 app.use('/owner', ownerRoute)
 
 
@@ -24,3 +28,4 @@ app.listen(port,(err)=>{
     }
 console.log(`server is listening on port ${port}`);
 })
+
