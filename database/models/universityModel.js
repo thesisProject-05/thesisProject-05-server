@@ -42,6 +42,13 @@
               err ? cb(err, null) : cb(null, results);
             }) 
         },
+
+        getOneByAdress : (cb,id)=>{
+          let syntax = `SELECT *  FROM university  WHERE adress = ? = ?`;
+          db.query(syntax,id,(err, results) => {
+              err ? cb(err, null) : cb(null, results);
+            }) 
+        },
   
   
   }
