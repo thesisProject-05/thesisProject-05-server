@@ -41,6 +41,12 @@ module.exports = {
             err ? cb(err, null) : cb(null, results);
           }) 
       },
+      getOneByAdress : (cb,adress)=>{
+        let syntax = `SELECT *  FROM residence  WHERE adress = ?`;
+        db.query(syntax,adress,(err, results) => {
+            err ? cb(err, null) : cb(null, results);
+          }) 
+      },
 
 
 
