@@ -4,7 +4,7 @@ const config={
     host:"mysql-95365-0.cloudclusters.net",
     user:"admin",
     password:"NvsRYnD4",
-    database:'ThesisProject',
+    database:'roostIt',
     port:10015
 
 }
