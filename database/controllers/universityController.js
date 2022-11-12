@@ -1,4 +1,4 @@
-const university = require('../database/models/universityMedel.js')
+const university = require('../models/universityModel.js')
   module.exports = {
     // getAll University
     getAll : (req,res)=> {
