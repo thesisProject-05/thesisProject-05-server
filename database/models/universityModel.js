@@ -1,4 +1,3 @@
-  
   const db = require("../database/index.js");
 
   module.exports = {
@@ -42,9 +41,10 @@
               err ? cb(err, null) : cb(null, results);
             }) 
         },
+//need to review it 
 
         getOneByAdress : (cb,id)=>{
-          let syntax = `SELECT *  FROM university  WHERE adress = ? = ?`;
+          let syntax = `SELECT *  FROM university  WHERE adress = ?`;
           db.query(syntax,id,(err, results) => {
               err ? cb(err, null) : cb(null, results);
             }) 
