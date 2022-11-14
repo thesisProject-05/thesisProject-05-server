@@ -15,12 +15,12 @@ USE `roostIt` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `roostIt`.`residence` (
   `idresidence` INT NOT NULL AUTO_INCREMENT,
-  `photo` VARCHAR(255) NULL,
+  `photo` TEXT NULL,
   `name` VARCHAR(45) NULL,
   `adresse` VARCHAR(255) NULL,
   `phonenumber` REAL NULL,
   `location` VARCHAR(255) NULL,
-  `description` VARCHAR(255) NULL,
+  `description` TEXT NULL,
   PRIMARY KEY (`idresidence`))
 ENGINE = InnoDB;
 -- -----------------------------------------------------

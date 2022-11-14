@@ -3,8 +3,8 @@ const router =express.Router();
 
 
 const {getAll,addUniversity,deleteUniversity,updateUniversity,getOne,getOneByAdress}=require("../controllers/universityController.js");
-router.get('/all',getAll);
-router.post('/add',addUniversity);
+router.get('/',getAll);
+router.post('/',addUniversity);
 router.delete ('/:id',deleteUniversity);
 router.put("/:id",updateUniversity)
 router.get('/:id',getOne)
