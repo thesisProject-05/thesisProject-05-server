@@ -1,4 +1,4 @@
-const db = require("../database/index.js");
+const db = require("../index");
 
 
 module.exports = {
@@ -9,8 +9,8 @@ module.exports = {
       });
     },
 
-    addResidence: (cb,values) => {
-        let syntax = `INSERT INTO residence SET photo=?, name=? , adresse=? , phonenumber=? , location=? , description=?`; 
+    addResidence: (values,cb) => {
+        let syntax = `INSERT INTO residence SET photo=?, name=? , adresse=? , phonenumber=? , location=? , description=?;`; 
         db.query(syntax,[[values.photo],[values.name],[values.adresse],[values.phonenumber],[values.location],[values.description]], (err, results) => {
           err ? cb(err, null) : cb(null, results);
         });
