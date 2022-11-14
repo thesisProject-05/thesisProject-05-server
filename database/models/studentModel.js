@@ -28,19 +28,51 @@ module.exports={
             })
     },
     getAllByHouse:(id,callback)=>{
-        let query=`select * from students house_id=?`
+        let query=`select * from students where house_id=?`
         connection.query(query,[id],
             (error,results)=>{
                 callback(error,results)
             })
     },
-    register: function(callback,body){
+    getStudentById:(id,callback)=>{
+        let query='select * from students where idstudents =? '
+        connection.query(query,[id],
+            (error,results)=>{
+                callback(error,results)
+            })
+    },
+    
+    register: (callback,body)=>{
         let query=`insert into students SET fullName=?,dataofBirth=?,email=?,password=?,gender=?,phonenumber=?,
             lookingFor=?,city=?,rentPeriode=?,photo=?,maxbudget=?,blocked=?`
             connection.query(query,[[body.fullName],[body.dataofBirth],[body.email],[body.password],[body.gender],[body.phonenumber],
                 [body.lookingFor],[body.city],[body.rentPeriode],[body.photo],[body.maxbudget],[body.blocked]],
-                function(error,results){
+                (error,results)=>{
                     callback(error,results)
-                    console.log(body);
-                })    }
+                    
+                })    
+    },
+    login:(callback,body)=>{
+        let query =`select idstudents from students where email=? AND password =?`
+        connection.query(query,[[body.email],[body.password]],(error,results)=>{
+            callback(error,results)
+        })
+    },
+    deleteStudent:(id,callback)=>{
+        let query=`delete from students where idstudents =?`
+        connection.query(query,[id],(error,results)=>{
+            callback(error,results)
+        })
+
+    },
+    updateStudent:(body,id,callback)=>{
+        let query=`update students set fullName=?,dataofBirth=?,email=?,password=?,gender=?,phonenumber=?,
+        lookingFor=?,city=?,rentPeriode=?,photo=?,maxbudget=?,blocked=? where idstudents=?  `
+        connection.query(query,[[body.fullName],[body.dataofBirth],[body.email],[body.password],[body.gender],[body.phonenumber],
+            [body.lookingFor],[body.city],[body.rentPeriode],[body.photo],[body.maxbudget],[body.blocked],[id]],
+            (error,results)=>{
+            callback(error,results)
+        })
+
+    }
     }

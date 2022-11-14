@@ -29,7 +29,7 @@ const university = require('../models/universityModel.js')
 
         university.updateUniversity((err,results)=>{
             err ?  res.send(err) : res.json(results);
-         },[req.body.phase,req.params.id])
+         },[req.body,req.params.id])
     },
 
     //update University 
