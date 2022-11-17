@@ -1,4 +1,4 @@
-const residence = require('../database/models/residenceModel.js')
+const residence = require('../models/residenceModel')
 module.exports = {
         // getAll Residence
         getAll : (req,res)=> {
@@ -10,10 +10,10 @@ module.exports = {
 
         addResidence:(req,res)=> {
  
-            residence.addResidence ((err,results)=>{
+            residence.addResidence (req.body,(err,results)=>{
 
                 err ?  res.status(500).send(err) : res.status(201).json("created");
-            },req.body)
+            })
             // depend on the model
         },
 

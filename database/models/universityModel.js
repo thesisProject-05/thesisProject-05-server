@@ -4,7 +4,7 @@
       getAll: (cb) => {
         let syntax = `SELECT * FROM university`;
         db.query(syntax, (err, results) => {
-          err ? cb(err, null) : cb(null, results);
+          cb(err, results);
         });
       },
   
