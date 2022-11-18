@@ -3,7 +3,7 @@ const db = require('../index')
 module.exports = {
    //add homeOwner
     register: (value,cb)=>{
-        let sql= `INSERT INTO homeOwner SET fullName=?, email=?, password=? dateofBirth=? phoneNumber=? 
+        let sql= `INSERT INTO homeOwner SET fullName=?, email=?, password=? dateOfBirth=? phoneNumber=? 
         city=?, CIN= ?;`;
         db.query(sql,value,(error,results)=>{
             cb(error,results);

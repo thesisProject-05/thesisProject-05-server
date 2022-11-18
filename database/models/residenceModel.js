@@ -10,8 +10,8 @@ module.exports = {
     },
 
     addResidence: (values,cb) => {
-        let syntax = `INSERT INTO residence SET photo=?, name=? , adresse=? , phonenumber=? , location=? , description=?;`; 
-        db.query(syntax,[[values.photo],[values.name],[values.adresse],[values.phonenumber],[values.location],[values.description]], (err, results) => {
+        let syntax = `INSERT INTO residence SET photo=?, name=? , adresse=? , phonenumber=? ,longitude=?,latidue=? , description=?,city=?;`; 
+        db.query(syntax,[[values.photo],[values.name],[values.adresse],[values.phonenumber],[values.longitude],[values.latidue],[values.description],[values.city]], (err, results) => {
           err ? cb(err, null) : cb(null, results);
         });
       }, 
@@ -25,10 +25,10 @@ module.exports = {
 
       },
 
-      updateResidence : (cb,values) => {
+      updateResidence : (cb,values,id) => {
 
-        let syntax = `UPDATE residence set photo = ?, phonenumber=? WHERE idresidence = ?`;
-        db.query(syntax,values,(err, results) => {
+        let syntax = `UPDATE residence set photo = ?,name=?,phonenumber=?,description =? WHERE idresidence = ?`;
+        db.query(syntax,[values,id],(err, results) => {
             err ? cb(err, null) : cb(null, results);
           }) 
 
@@ -43,6 +43,12 @@ module.exports = {
       },
       getOneByAdress : (cb,adress)=>{
         let syntax = `SELECT *  FROM residence  WHERE adress = ?`;
+        db.query(syntax,adress,(err, results) => {
+            err ? cb(err, null) : cb(null, results);
+          }) 
+      },
+      getOneByCity : (cb,adress)=>{
+        let syntax = `SELECT *  FROM residence  WHERE city = ?`;
         db.query(syntax,adress,(err, results) => {
             err ? cb(err, null) : cb(null, results);
           }) 

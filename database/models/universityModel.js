@@ -1,4 +1,4 @@
-  const db = require("../database/index.js");
+  const db = require("../index")
 
   module.exports = {
       getAll: (cb) => {
@@ -9,7 +9,7 @@
       },
   
       addUniversity: (cb, values) => {
-          let syntax = `INSERT INTO university SET universityname=?, location=? , adresse=?`  ; 
+          let syntax = `INSERT INTO university SET universityName=?, city=? , adresse=? ,longitude=? ,latiude=?`  ; 
           db.query(syntax, values, (err, results) => {
             err ? cb(err, null) : cb(null, results);
           });
@@ -26,10 +26,10 @@
         },
   
   
-        updateUniversity : (cb,values) => {
+        updateUniversity : (cb,values,id) => {
   
           let syntax = `UPDATE university set universityname = ? WHERE iduniversity = ?`;
-          db.query(syntax,values,(err, results) => {
+          db.query(syntax,[[values],[id]],(err, results) => {
               err ? cb(err, null) : cb(null, results);
             }) 
   

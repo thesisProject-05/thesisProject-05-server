@@ -12,7 +12,7 @@ module.exports = {
  
             residence.addResidence (req.body,(err,results)=>{
 
-                err ?  res.status(500).send(err) : res.status(201).json("created");
+                err ?  res.status(500).send(err) : res.status(201).json(results);
             })
             // depend on the model
         },
@@ -30,7 +30,7 @@ module.exports = {
 
             residence.updateResidence ((err,results)=>{
                 err ?  res.send(err) : res.json(results);
-             },[req.body.phase,req.params.id])
+             },[req.body.phase],[req.params.id])
         },
 
 
@@ -47,7 +47,13 @@ module.exports = {
 
         residence.getOne((err,results)=>{
             err ?  res.send(err) : res.json(results);
-         },[req.params.adress])
+         },[req.body.adress])
+    },
+    getOneByCity : (req,res)=> {
+
+        residence.getOne((err,results)=>{
+            err ?  res.send(err) : res.json(results);
+         },[req.body.city])
     },
 
 
