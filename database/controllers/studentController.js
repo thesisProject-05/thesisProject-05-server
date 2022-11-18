@@ -1,4 +1,7 @@
 const students=require('../models/studentModel')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt');
+
 module.exports={
     register:(req,res)=>{
         students.register((error,results)=>{
