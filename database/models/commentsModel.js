@@ -8,7 +8,7 @@ module.exports={
         })
     },
     addComment:(body,callBack)=>{
-        let query=`insert into comments SET content=?,username=? `
+        let query=`insert into comments SET content=?,userName=? `
         connection.query(query,[[body.content],[body.username]],(error,results)=>{
             callBack(error,results)
         })

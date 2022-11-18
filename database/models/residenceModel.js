@@ -10,8 +10,8 @@ module.exports = {
     },
 
     addResidence: (values,cb) => {
-        let syntax = `INSERT INTO residence SET photo=?, name=? , adresse=? , phonenumber=? ,longitude=?,latidue=? , description=?,city=?;`; 
-        db.query(syntax,[[values.photo],[values.name],[values.adresse],[values.phonenumber],[values.longitude],[values.latidue],[values.description],[values.city]], (err, results) => {
+        let syntax = `INSERT INTO residence SET photo=?, name=? , adresse=? , phoneNumber=? ,longitude=?,latidue=? , description=?,city=?;`; 
+        db.query(syntax,[[values.photo],[values.name],[values.adresse],[values.phoneNumber],[values.longitude],[values.latidue],[values.description],[values.city]], (err, results) => {
           err ? cb(err, null) : cb(null, results);
         });
       }, 
@@ -27,7 +27,7 @@ module.exports = {
 
       updateResidence : (cb,values,id) => {
 
-        let syntax = `UPDATE residence set photo = ?,name=?,phonenumber=?,description =? WHERE idresidence = ?`;
+        let syntax = `UPDATE residence set photo = ?,name=?,phoneNumber=?,description =? WHERE idresidence = ?`;
         db.query(syntax,[values,id],(err, results) => {
             err ? cb(err, null) : cb(null, results);
           }) 
