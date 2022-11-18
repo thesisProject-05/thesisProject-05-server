@@ -13,7 +13,7 @@ module.exports={
         })
     },
     addPost:(body,callBack)=>{
-        let query=`insert into studentsPosts set userName=?,content=? `
+        let query=`insert into studentsPosts set userName=?,content=? where students_idstudents =? `
         connection.query(query,[[body.userName],[body.content]],(error,results)=>{
             callBack(error,results)
         })
@@ -25,7 +25,7 @@ module.exports={
         })
     },
     updatePost:(id,callBack)=>{
-        let query=`update studentsPosts set content=? where studentsPosts=?`
+        let query=`update studentsPosts set content=? where idPosts=?`
         connection.query(query,[id],(error,results)=>{
             callBack(error,results)
         })

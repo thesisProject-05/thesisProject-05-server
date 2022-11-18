@@ -33,8 +33,8 @@ module.exports = {
                             });
                         } else {
                             conn.query(
-                                `INSERT INTO homeOwner (fullName, email,password, dateofBirth, phoneNumber, city, CIN) VALUES ('${req.body.fullName}', 
-                            ${conn.escape(req.body.email)},${conn.escape(hash)},'${req.body.dateofBirth}','${req.body.phoneNumber}','${req.body.city}','${req.body.CIN}');`, (error, results) => {
+                                `INSERT INTO homeOwner (fullName, email,password, dateOfBirth, phoneNumber, city, CIN,photo,cookie,activationCode) VALUES ('${req.body.fullName}', 
+                            ${conn.escape(req.body.email)},${conn.escape(hash)},'${req.body.dateofBirth}','${req.body.phoneNumber}','${req.body.city}','${req.body.CIN}','${req.body.photo}','${req.body.cookie}','${req.body.activationCode}');`, (error, results) => {
                                 if (error) {
                                     return res.status(400).send(error)
                                 }
