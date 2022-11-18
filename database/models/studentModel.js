@@ -44,9 +44,9 @@ module.exports={
     
     register: (callback,body)=>{
         let query=`insert into students SET fullName=?,dateOfBirth=?,email=?,password=?,gender=?,phoneNumber=?,CIN=?
-            lookingFor=?,city=?,rentePeriode=?,photo=?,maxBudget=?,blocked=? ,activationCode=?,cookie=?`
+            lookingFor=?,city=?,rentePeriode=?,photo=?,maxBudget=?,blocked=?,status=? ,activationCode=?,cookie=?`
             connection.query(query,[[body.fullName],[body.dateOfBirth],[body.email],[body.password],[body.gender],[body.phoneNumber],[body.CIN],
-                [body.lookingFor],[body.city],[body.rentePeriode],[body.photo],[body.maxBudget],[body.blocked],[body.activationCode],[body.cookie]],
+                [body.lookingFor],[body.city],[body.rentePeriode],[body.photo],[body.maxBudget],[body.blocked],[body.status],[body.activationCode],[body.cookie]],
                 (error,results)=>{
                     callback(error,results)
                     
