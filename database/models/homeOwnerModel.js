@@ -1,23 +1,7 @@
 const db = require('../index')
 
 module.exports = {
-   //add homeOwner
-    register: (value,cb)=>{
-        let sql= `INSERT INTO homeOwner SET fullName=?, email=?, password=? dateOfBirth=? phoneNumber=? 
-        city=?, CIN= ?;`;
-        db.query(sql,value,(error,results)=>{
-            cb(error,results);
-        })
-    },
-
-    login: (cb, value)=>{
-        let sql=`SELECT idhomeOwner FROM homeOwner WHERE email=? AND password=?;`;
-          db.query(sql,value,(error,results)=>{
-            cb(error,results);
-          })
-    },
-
-    // get homeOwner by phoneNumber
+   // get homeOwner by phoneNumber
     getOneOwnerByPhoneNumber: (cb,value)=>{
       let sql= `SELECT * FROM homeOwner WHERE phoneNumber= ?;`;
       db.query(sql,value,(error,results)=>{
@@ -27,7 +11,7 @@ module.exports = {
      // get homeOwner by email
      getOwnerByEmail: (cb,value)=>{
       let sql= `SELECT * FROM homeOwner WHERE email=?;`;
-      db.query(sql,value,(error,results)=>{
+      db.query(sql,[value.email],(error,results) => {
          cb(error,results);
       }) 
     },
@@ -35,7 +19,7 @@ module.exports = {
     // get homeOwner by city 
     getOwnerByCity: (cb,value)=>{
       let sql= `SELECT * FROM homeOwner WHERE city= ?;`;
-      db.query(sql,(error,results)=>{
+      db.query(sql,value,(error,results)=>{
         cb(error,results);
       }) 
     },
@@ -57,7 +41,7 @@ module.exports = {
 
     deleteHomeOwner: (cb,id)=>{
      let sql = `DELETE FROM homeOwner WHERE idhomeOwner=?;`;
-      db.query(syntax,[id],(error, results) => {
+      db.query(sql,[id],(error, results) => {
           cb(error,results);
     }) 
     }
