@@ -1,64 +1,81 @@
 -- MySQL Workbench Forward Engineering
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
 -- -----------------------------------------------------
 -- Schema roostIt
 -- -----------------------------------------------------
+
 -- -----------------------------------------------------
 -- Schema roostIt
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `roostIt` DEFAULT CHARACTER SET utf8 ;
 USE `roostIt` ;
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`residence`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `roostIt`.`residence` (
   `idresidence` INT NOT NULL AUTO_INCREMENT,
-  `photo` VARCHAR(255) NOT NULL,
+  `photo` LONGTEXT NOT NULL,
   `name` VARCHAR(45) NULL,
   `adresse` VARCHAR(255) NULL,
-  `phonenumber` INT NULL,
-  `location` VARCHAR(85) NULL,
+  `phoneNumber` INT NULL,
+  `longitude` VARCHAR(255) NULL,
+  `latidue` VARCHAR(255) NULL,
   `description` VARCHAR(255) NULL,
   `city` VARCHAR(85) NOT NULL,
   PRIMARY KEY (`idresidence`))
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`university`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `roostIt`.`university` (
   `iduniversity` INT NOT NULL AUTO_INCREMENT,
-  `universityname` VARCHAR(255) NOT NULL,
-  `location` VARCHAR(255) NOT NULL,
+  `universityName` VARCHAR(255) NOT NULL,
+  `city` VARCHAR(255) NOT NULL,
   `adresse` VARCHAR(255) NOT NULL,
+  `longitude` VARCHAR(255) NULL,
+  `latiude` VARCHAR(255) NULL,
   PRIMARY KEY (`iduniversity`))
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`homeOwner`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `roostIt`.`homeOwner` (
   `idhomeOwner` INT NOT NULL AUTO_INCREMENT,
-  `fullname` VARCHAR(45) NOT NULL,
+  `fullName` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NULL,
-  `dateofbirth` VARCHAR(45) NULL,
-  `phonenumber` VARCHAR(45) NULL,
+  `password` LONGTEXT NOT NULL,
+  `dateOfBirth` VARCHAR(45) NULL,
+  `phoneNumber` VARCHAR(45) NULL,
   `city` VARCHAR(45) NULL,
-  `CIN` VARCHAR(45) NOT NULL,
+  `cin` VARCHAR(45) NOT NULL,
+  `photo` LONGTEXT NULL,
+  `cookie` LONGTEXT NULL,
+  `activationCode` VARCHAR(255) NULL,
   PRIMARY KEY (`idhomeOwner`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
   UNIQUE INDEX `CIN_UNIQUE` (`CIN` ASC) VISIBLE)
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`house`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `roostIt`.`house` (
   `idhouse` INT NOT NULL,
-  `photo` VARCHAR(255) NOT NULL,
+  `photo` LONGTEXT NOT NULL,
   `description` VARCHAR(255) NULL,
   `price` INT NULL,
-  `location` VARCHAR(255) NULL,
+  `latiude` VARCHAR(255) NULL,
+  `longitude` VARCHAR(255) NULL,
   `adress` VARCHAR(255) NULL,
   `city` VARCHAR(45) NULL,
   `rate` VARCHAR(45) NULL,
@@ -71,24 +88,29 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`house` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`students`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `roostIt`.`students` (
   `idstudents` INT NOT NULL AUTO_INCREMENT,
-  `fullname` VARCHAR(255) NULL,
-  `dataofbirth` VARCHAR(60) NULL,
+  `fullName` VARCHAR(255) NULL,
+  `dateOfBirth` VARCHAR(60) NULL,
   `email` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
+  `password` LONGTEXT NOT NULL,
   `gender` VARCHAR(45) NULL,
-  `phonenumber` INT NULL,
-  `CIN` INT NOT NULL,
-  `lookingfor` VARCHAR(45) NULL,
+  `phoneNumber` INT NULL,
+  `cin` VARCHAR(255) NOT NULL,
+  `lookingFor` VARCHAR(45) NULL,
   `city` VARCHAR(45) NULL,
   `rentePeriode` VARCHAR(85) NULL,
-  `photo` VARCHAR(45) NOT NULL,
-  `maxbudget` VARCHAR(45) NULL,
+  `photo` LONGTEXT NOT NULL,
+  `maxBudget` VARCHAR(45) NULL,
   `blocked` VARCHAR(255) NULL DEFAULT 'false',
+  `status` VARCHAR(255) NULL DEFAULT 'false',
+  `activationCode` VARCHAR(255) NULL,
+  `cookie` LONGTEXT NULL,
   `residence_idresidence` INT NULL,
   `university_iduniversity` INT NULL,
   `house_idhouse` INT NULL,
@@ -114,6 +136,8 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`students` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`studentsPosts`
 -- -----------------------------------------------------
@@ -130,6 +154,8 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`studentsPosts` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`homeOwnerPosts`
 -- -----------------------------------------------------
@@ -146,13 +172,15 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`homeOwnerPosts` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `roostIt`.`comments`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `roostIt`.`comments` (
   `idcomments` INT NOT NULL,
   `content` VARCHAR(255) NOT NULL,
-  `username` VARCHAR(45) NOT NULL,
+  `userName` VARCHAR(45) NOT NULL,
   `homeOwner_idhomeOwner` INT NULL,
   `students_idstudents` INT NULL,
   PRIMARY KEY (`idcomments`),
@@ -169,6 +197,8 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`comments` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

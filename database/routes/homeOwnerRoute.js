@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, getOneOwnerByPhoneNumber, getHomeOwnerById, getAllOwners, getOwnerByCity, getOwnerByEmail, logout, deleteHomeOwner,getHomeOwner} = require('../controllers/homeOwnerController.js')
+const { register, login, getOneOwnerByPhoneNumber, getHomeOwnerById, getAllOwners, getOwnerByCity, getOwnerByEmail, logout, deleteHomeOwner,ownerVerify} = require('../controllers/homeOwnerController.js')
 
 
 
 
 
 
-router.get('/all',getAllOwners);
+router.get('/',getAllOwners);
 router.get('/:id',getHomeOwnerById);
 router.post('/register',register);
 router.post('/login',login);
@@ -16,5 +16,6 @@ router.post('/city', getOwnerByCity);
 router.post('/email', getOwnerByEmail);
 router.post('/logout',logout)
 router.delete('/:id',deleteHomeOwner);
+router.get('/check',ownerVerify);
 
 module.exports = router;

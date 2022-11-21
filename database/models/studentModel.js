@@ -7,14 +7,14 @@ module.exports={
         })
     },
     getAllByResidence:(id,callback)=>{
-        let query=`select * from students where residence_id=?`
+        let query=`select * from students where residence_idresidence=?`
         connection.query(query,[id],
             (error,results)=>{
                 callback(error,results)
             })
     },
     getAllByuniversity:(id,callback)=>{
-        let query=`select * from students where university_id=?`
+        let query=`select * from students where university_iduniversity=?`
         connection.query(query,[id],
             (error,results)=>{
                 callback(error,results)
@@ -28,19 +28,51 @@ module.exports={
             })
     },
     getAllByHouse:(id,callback)=>{
-        let query=`select * from students house_id=?`
+        let query=`select * from students where  house_idhouse=?`
         connection.query(query,[id],
             (error,results)=>{
                 callback(error,results)
             })
     },
-    register: function(callback,body){
-        let query=`insert into students SET fullName=?,dataofBirth=?,email=?,password=?,gender=?,phonenumber=?,
-            lookingFor=?,city=?,rentPeriode=?,photo=?,maxbudget=?,blocked=?`
-            connection.query(query,[[body.fullName],[body.dataofBirth],[body.email],[body.password],[body.gender],[body.phonenumber],
-                [body.lookingFor],[body.city],[body.rentPeriode],[body.photo],[body.maxbudget],[body.blocked]],
-                function(error,results){
+    getStudentById:(id,callback)=>{
+        let query='select * from students where idstudents =? '
+        connection.query(query,[id],
+            (error,results)=>{
+                callback(error,results)
+            })
+    },
+    
+    register: (callback,body)=>{
+        let query=`insert into students SET fullName=?,dateOfBirth=?,email=?,password=?,gender=?,phoneNumber=?,CIN=?
+            lookingFor=?,city=?,rentePeriode=?,photo=?,maxBudget=?,blocked=?,status=? ,activationCode=?,cookie=?`
+            connection.query(query,[[body.fullName],[body.dateOfBirth],[body.email],[body.password],[body.gender],[body.phoneNumber],[body.CIN],
+                [body.lookingFor],[body.city],[body.rentePeriode],[body.photo],[body.maxBudget],[body.blocked],[body.status],[body.activationCode],[body.cookie]],
+                (error,results)=>{
                     callback(error,results)
-                    console.log(body);
-                })    }
+                    
+                })    
+    },
+    login:(callback,body)=>{
+        let query =`select idstudents from students where email=? AND password =?`
+        connection.query(query,[[body.email],[body.password]],(error,results)=>{
+            callback(error,results)
+        })
+    },
+    deleteStudent:(id,callback)=>{
+        let query=`delete from students where idstudents =?`
+        connection.query(query,[id],(error,results)=>{
+            callback(error,results)
+        })
+
+    },
+    updateStudent:(body,id,callback)=>{
+        let query=`update students set fullName=?,dateOfBirth=?,email=?,password=?,gender=?,phoneNumber=?,CIN=?
+        lookingFor=?,city=?,rentePeriode=?,photo=?,maxBudget=?,blocked=? where idstudents=?  `
+        connection.query(query,[[body.fullName],[body.dateOfBirth],[body.email],[body.password],[body.gender],[body.phoneNumber],[body.CIN],
+            [body.lookingFor],[body.city],[body.rentePeriode],[body.photo],[body.maxBudget],[body.blocked],[id]],
+            (error,results)=>{
+            callback(error,results)
+        })
+
+    }
     }

@@ -1,4 +1,4 @@
-const residence = require('../database/models/residenceModel.js')
+const residence = require('../models/residenceModel')
 module.exports = {
         // getAll Residence
         getAll : (req,res)=> {
@@ -10,10 +10,10 @@ module.exports = {
 
         addResidence:(req,res)=> {
  
-            residence.addResidence ((err,results)=>{
+            residence.addResidence (req.body,(err,results)=>{
 
-                err ?  res.status(500).send(err) : res.status(201).json("created");
-            },req.body)
+                err ?  res.status(500).send(err) : res.status(201).json(results);
+            })
             // depend on the model
         },
 
@@ -30,7 +30,7 @@ module.exports = {
 
             residence.updateResidence ((err,results)=>{
                 err ?  res.send(err) : res.json(results);
-             },[req.body.phase,req.params.id])
+             },[req.body.phase],[req.params.id])
         },
 
 
@@ -43,6 +43,19 @@ module.exports = {
             err ?  res.send(err) : res.json(results);
          },[req.params.id])
     },
+    getOneByAdress : (req,res)=> {
+
+        residence.getOne((err,results)=>{
+            err ?  res.send(err) : res.json(results);
+         },[req.body.adress])
+    },
+    getOneByCity : (req,res)=> {
+
+        residence.getOne((err,results)=>{
+            err ?  res.send(err) : res.json(results);
+         },[req.body.city])
+    },
+
 
 
 }
