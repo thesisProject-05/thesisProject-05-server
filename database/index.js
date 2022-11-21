@@ -1,11 +1,10 @@
 const mysql=require('mysql2')
 
 const config={
-    host:"mysql-95365-0.cloudclusters.net",
-    user:"admin",
-    password:"NvsRYnD4",
+    host:"localhost",
+    user:"root",
+    password:"12345",
     database:'roostIt',
-    port:10015
 
 }
 
