@@ -14,4 +14,4 @@ const {addHouse,getOneHouse,getOwnerHouses,deleteHouse,
     
     
     
-    module.exports=router
+    module.exports=router;

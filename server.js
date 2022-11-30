@@ -17,7 +17,10 @@ const studPosts = require("./database/routes/studPostRoute.js");
 const ownerPosts = require("./database/routes/ownerPostsRoutes.js");
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+        origin:true,
+        credentials: true,
+      }))
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser())
 

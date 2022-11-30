@@ -3,17 +3,17 @@ const house = require('../models/houseModel');
 module.exports = {
     addHouse: (req, res) => {
         console.log(req.body)
-        house.addHouse(req.body, (error, results) => {
+        house.addHouse(req.body,req.params.id,(error, results) => {
             error ? res.status(500).send(error) : res.status(200).json(results);
         })
     },
     getOneHouse: (req, res) => {
-        house.getOneHouse(req.params.id, (error, results) => {
+        house.getOneHouse(req.params.id,(error, results) => {
             error ? res.status(500).send(error) : res.status(200).json(results);
         })
     },
     getOwnerHouses: (req, res) => {
-        house.getOwnerHouses(req.params.id, (error, results) => {
+        house.getOwnerHouses(req.params.id,(error, results) => {
             error ? res.status(500).send(error) : res.status(200).json(results);
         })
     },
@@ -28,7 +28,7 @@ module.exports = {
         })
     },
     updateHouse: (req, res) => {
-        house.updateHouse(req.body, req.params.id, (error, results) => {
+        house.updateHouse(req.body,req.params.id,(error, results) => {
             error ? res.status(500).send(error) : res.status(201).json(results);
         })
     },

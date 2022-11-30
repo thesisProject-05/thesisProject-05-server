@@ -8,8 +8,8 @@ module.exports={
         })
     },
     addComment:(body,callBack)=>{
-        let query=`insert into comments SET content=?,userName=? `
-        connection.query(query,[[body.content],[body.username]],(error,results)=>{
+        let query=`insert into comments SET content=?,userName=?;`
+        connection.query(query,[body.content,body.username],(error,results)=>{
             callBack(error,results)
         })
     },
@@ -27,7 +27,7 @@ module.exports={
     },
     updateComment:(body,id,callback)=>{
         let query=`update comments set content=? where idcomments=?`
-        connection.query(query,[body.content,[id]],(error,results)=>{
+        connection.query(query,[body.content,id],(error,results)=>{
             callback(error,results)
         })
     }
