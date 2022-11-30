@@ -1,14 +1,14 @@
 const db = require('../index');
 
 module.exports = {
-    addPost: (body,cb)=>{
-        let sql = `INSERT INTO homeOwnerPosts SET userName=? content= ? homeOwner_idhomeOwner=? ;`;
-     db.query(sql,[[body.userName],[body.content],[body.homeOwner_idhomeOwner]],(error,results)=>{
+    addPost: (body,id,cb)=>{
+        let sql = `INSERT INTO homeOwnerPosts SET userName=?, content=?, homeOwner_idhomeOwner=? ;`;
+     db.query(sql,[body.userName,body.content,id],(error,results)=>{
     cb(error,results);
     })
      },
      getOne: (id, cb) => {
-        let sql = `SELECT * FROM homeOwnerPosts WHERE idhomeOwnerPosts=?`;
+        let sql = `SELECT * FROM homeOwnerPosts WHERE idhomeOwnerPosts=?;`;
         db.query(sql, [id], (error, results) => {
             cb(error, results);
         })
@@ -26,14 +26,14 @@ module.exports = {
         })
     },
     getAllPosts: (cb) => {
-        let sql = `SELECT * FROM homeOwnerPosts ;`;
+        let sql = `SELECT * FROM homeOwnerPosts;`;
         db.query(sql, (error, results) => {
              cb(error, results);
         })
     },
     updatePost: (body,id,cb) => {
-        let sql = `UPDATE homeOwnerPosts SET userName=? content= ? WHERE idhomeOwnerPosts=? ;`;
-        db.query(sql,[[body.userName],[body.content],[id]], (error, results) => {
+        let sql = `UPDATE homeOwnerPosts SET userName=?,content=? WHERE idhomeOwnerPosts=?;`;
+        db.query(sql,[body.userName,body.content,id], (error, results) => {
             cb(error, results);
         })
     },

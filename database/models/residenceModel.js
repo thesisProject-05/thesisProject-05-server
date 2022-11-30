@@ -3,7 +3,7 @@ const db = require("../index");
 
 module.exports = {
     getAll: (cb) => {
-      let syntax = `SELECT * FROM residence`;
+      let syntax = `SELECT * FROM residence;`;
       db.query(syntax, (err, results) => {
         err ? cb(err, null) : cb(null, results);
       });

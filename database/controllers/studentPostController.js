@@ -12,9 +12,9 @@ module.exports = {
         }, req.params.id)
     },
     addPost: (req,res)=>{
-        studPost. addPost((err,result)=>{
+        studPost. addPost(req.body,req.params.id,(err,result)=>{
             err ? res.status(409).send(err) : res.status(200).send(result)
-        }, req.body)
+        })
     },
     deletePost: (req,res)=>{
         studPost. deletePost((err,result)=>{

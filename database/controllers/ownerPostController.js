@@ -2,7 +2,7 @@ const OwPost = require('../models/ownerPostModel');
 
 module.exports = {
     addPost: (req, res) => {
-        OwPost.addPost(req.body, (error, results) => {
+        OwPost.addPost(req.body,req.params.id,(error, results) => {
             error ? res.status(500).send(error) : res.status(201).json(results);
         })
     },
@@ -28,7 +28,7 @@ module.exports = {
         })
     },
     updatePost: (req, res) => {
-      OwPost.updatePost(req.body, req.params.id, (error, results) => {
+      OwPost.updatePost(req.body,req.params.id, (error, results) => {
             error ? res.status(500).send(error) : res.status(201).json(results);
         })
     },

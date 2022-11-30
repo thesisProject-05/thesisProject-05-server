@@ -8,6 +8,7 @@ cloudinary.config({
     api_secret: process.env.API_SECRET,
 });
 // sending image to cloudinary
+
 sendToCloud = (path, data)=>{
     return cloudinary.uploader
     .upload(path, {
@@ -19,6 +20,7 @@ sendToCloud = (path, data)=>{
     });
 };
  // removing image from cloudinary
+ 
  removeFromCloud = async (public_id)=>{
     await cloudinary.uploader
     .destroy(public_id,(error,result)=>{
