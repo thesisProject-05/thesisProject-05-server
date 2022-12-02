@@ -2,7 +2,7 @@ const express=require("express")
 const router=express.Router()
 
 const {getAllByHomeOwner,getAllByHouse,getAllByResidence,getAllByUniversity,getAll,getStudentById,
-        register,deleteStudent,updateStudent,login}=require('../controllers/studentController')
+        register,deleteStudent,updateStudent,login,verifyCode}=require('../controllers/studentController')
 router.get('/All',getAll)
 router.get('/HO/:id',getAllByHomeOwner)
 router.get('/H/:id',getAllByHouse)
@@ -13,6 +13,7 @@ router.delete('/:id',deleteStudent)
 router.put('/:id',updateStudent)
 router.post('/register',register)
 router.post('/login',login)
+router.post('/check',verifyCode)
 
 module.exports=router
 

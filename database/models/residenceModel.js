@@ -33,9 +33,7 @@ module.exports = {
           }) 
 
       },
-
-
-      getOne : (cb,id)=>{
+     getOne : (cb,id)=>{
         let syntax = `SELECT *  FROM residence  WHERE idresidence = ?`;
         db.query(syntax,id,(err, results) => {
             err ? cb(err, null) : cb(null, results);
