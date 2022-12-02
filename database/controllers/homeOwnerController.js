@@ -10,7 +10,9 @@ module.exports = {
    register: async (req, res, next) => {
     console.log(req.body);
     const { valid } = await isEmailValid(req.body.email);
+    // console.log(res,'theres');
     if (!valid) {
+      console.log(valid,'<===valid'); 
       return res.status(400).send({
         message: "Please enter a valid email address.",
       })}
@@ -49,18 +51,14 @@ module.exports = {
                     req.body.dateOfBirth
                   }',phoneNumber='${req.body.phoneNumber}}', city='${req.body.city}',cin='${
                     req.body.cin
-                  }',photo='${req.body.photo}',cookie='${
-                    req.body.cookie
-                  }',activationCode=${conn.escape(activatingCode)},cookie=0`,
+                  }',photo='${req.body.photo}',activationCode=${conn.escape(activatingCode)},cookie=0`,
                   (err, result) => {
                     if (err) {
                       return res.status(401).send(err);
                     }
                    sendCode(activatingCode, req.body.email);
 
-                    res.json({
-                      text: "welcome to our platform.. please check your email",
-                    });
+                    res.json(result);
                   }
                 );
               }
@@ -73,53 +71,19 @@ module.exports = {
       res.status(401).send("you have an error");
     }
   },
-  // ownerVerify:  (req, res, next) => {
-  //   if (
-  //     !req.headers.authorization ||
-  //     !req.headers.authorization.startsWith("Bearer") ||
-  //     !req.headers.authorization.split(" ")[1]
-  //   ) {
-  //     return res.status(401).json({
-  //       message: "please provide the token",
-  //     });
-  //   }
-  //   const amToken = req.headers.authorization.split(" ")[1];
-  //   const decoded = jwt.verify(
-  //     amToken,
-  //     "abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-  //   );
-  //   console.log(decoded, "decoded password: ");
-  //   conn.query(
-  //     `select * from homeOwner where idhomeOwner= ? `,
-  //     decoded.idhomeOwner,
-  //     (error, results, fields) => {
-  //       if (error) throw error;
-  //       return res.send({
-  //         data: {
-  //           fullName: results[0].fullName,
-  //           id: results[0].idhomeOwner,
-  //           email: results[0].email,
-  //         },
-  //       });
-  //     }
-  //   );
-  // },
 
   verifyCode: async (req, res) => {
     try {
-   //find one Patient with his id as a filter
-     db.query(`select * from homeOwner where email='${req.body.email}'`,(err,result)=>{
-       if (result.length&&result[0].ValidatorCode === req.body.ValidatorCode) {
-           db.query(`update homeOwner set cookie=1 where email='${req.body.email}'`,(error,result)=>{
+      console.log(req.params,"email");
+     conn.query(`select * from homeOwner where email='${req.body.email}'`,(err,result)=>{
+       if (result.length && result[0].activationCode === req.body.activationCode) {
+           conn.query(`update homeOwner set cookie=1 where email='${req.body.email}'`,(error,result)=>{
                error ? res.status(500).send(error) : res.status(200).send("thank you for joining our app") })
               }
-             else res.status(402).send("wrong code.. please re-check your email ");
+             else res.send("wrong code.. please re-check your email ");
             });
-          } catch (error) { res.status(400).send(error);}
+          } catch (error) { res.status(400).send(error.message);} 
         },
-
-
-
 
   login: (req, res, next) => {
     conn.query(

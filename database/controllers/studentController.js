@@ -6,12 +6,17 @@ const { sendEmail, sendCode } = require("./email.js");
 const { isEmailValid } = require("../../utils/emailValidator.js");
 module.exports = {
   register: async (req, res, next) => {
-    console.log(req.body);
+    // console.log(res);
+    // console.log(req.body);
     const { valid } = await isEmailValid(req.body.email);
+    
+    console.log(res,'theres');
     if (!valid) {
+     console.log(valid,'valid'); 
       return res.status(400).send({
         message: "Please enter a valid email address.",
-      });
+      })
+      
     } else {
       try {
         //generating the activation code
@@ -28,7 +33,9 @@ module.exports = {
             req.body.email
           )});`,
           (err, result) => {
+         
             if (result.length) {
+               console.log(result,"result");
               return res
                 .status(409)
                 .send({ msg: "This student user is already in use!" });
@@ -50,14 +57,14 @@ module.exports = {
                       req.body.gender
                     }',city='${req.body.city}',cin='${req.body.cin}',photo='${
                       req.body.photo
-                    }',cookie='${req.body.cookie}',rentePeriode='${
+                    }',rentePeriode='${
                       req.body.rentePeriode
                     }',maxBudget='${
                       req.body.maxBudget
                     }',activationCode=${db.escape(activatingCode)},cookie=0`,
                     (err, result) => {
                       if (err) {
-                        return res.status(400).send(err);
+                        return res.status(401).send(err);
                       }
                       sendCode(activatingCode, req.body.email);
 
@@ -72,8 +79,8 @@ module.exports = {
           }
         );
       } catch (error) {
-        console.log(error);
-        res.status(400).send("you have an error");
+        // console.log(error.message);
+        res.status(402).send("you have an error");
       }
     }
   },
@@ -85,9 +92,9 @@ module.exports = {
            db.query(`update students set cookie=1 where email='${req.body.email}'`,(error,result)=>{
                error ? res.status(500).send(error) : res.status(200).send("thank you for joining our app") })
               }
-             else res.status(402).send("wrong code.. please re-check your email");
+             else res.status(403).send("wrong code.. please re-check your email");
             });
-          } catch (error) { res.status(400).send(error);}
+          } catch (error) { res.status(404).send(error);}
         },
 
 
@@ -96,12 +103,12 @@ module.exports = {
       `SELECT * FROM STUDENTS WHERE email=${db.escape(req.body.email)}`,
       (err, result) => {
         if (err) {
-          return res.status(400).send({
+          return res.status(405).send({
             message: err,
           });
         }
         if (!result.length) {
-          return res.status(401).send({
+          return res.status(406).send({
             message:
               "invalid credentials please check your email or your password",
           });
@@ -122,7 +129,7 @@ module.exports = {
               });
               return res.status(200).send(token);
             }
-            return res.status(401).send({
+            return res.status(407).send({
               message:
                 "invalid credentials please check your email or your password",
             });

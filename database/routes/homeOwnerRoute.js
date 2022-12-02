@@ -16,6 +16,6 @@ router.post('/city', getOwnerByCity);
 router.post('/email', getOwnerByEmail);
 router.post('/logout',logout)
 router.delete('/:id',deleteHomeOwner);
-router.get('/check',verifyCode);
+router.post('/check',verifyCode);
 
 module.exports = router;
