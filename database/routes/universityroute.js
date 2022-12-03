@@ -8,7 +8,7 @@ router.post('/',addUniversity);
 router.delete ('/:id',deleteUniversity);
 router.put("/:id",updateUniversity)
 router.get('/:id',getOne)
-router.get('/:adress',getOneByAdress)
+router.get('/:adress',getOneByAdress) 
 
 
 
