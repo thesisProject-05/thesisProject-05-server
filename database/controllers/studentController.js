@@ -8,6 +8,8 @@ module.exports = {
   register: async (req, res, next) => {
     console.log(req.body);
     const { valid } = await isEmailValid(req.body.email);
+
+
     if (!valid) {
       console.log(valid,'<===valid'); 
       return res.status(400).send({
@@ -31,9 +33,11 @@ module.exports = {
           )});`,
           (err, result) => {
             if (result.length) {
+
                return res
                .status(409)
                .send({ msg: "This user is already in use!" });
+
             } else {
               bcrypt.hash(req.body.password, 10, (err, hash) => {
                 if (err) {
@@ -61,7 +65,9 @@ module.exports = {
                       }
                      else{ sendCode( activatingCode, req.body.email);
 
+
                       res.json(result);}
+
                     }
                   );
                 }
@@ -99,6 +105,7 @@ module.exports = {
   //       
   verifyCode: async (req, res) => {
     try {
+
       db.query(
         `select * from students where email='${req.body.email}'`,
         (err, result) => {
@@ -136,19 +143,23 @@ module.exports = {
   login: (req, res, next) => {
     db.query(
       `SELECT * FROM students WHERE email = ${db.escape(req.body.email)}`,
+
       (err, result) => {
         // user does not exists
         if (err) {
           return res.status(400).send({
+
             msg: err,
           });
         } else if (!result.length) {
           return res.status(401).send({
             msg: "Email or password is incorrect!",
+
           });
         } else if (result[0].cookie === 0) {
           res.status(402).send("please activate your account");
         }
+
         // check password
         else {
           bcrypt.compare(
@@ -177,8 +188,10 @@ module.exports = {
               }
               return res.status(401).send({
                 msg: "Username or password is incorrect!",
+
               });
             }
+
           );
         }
       }
@@ -206,6 +219,7 @@ module.exports = {
           id: results[0].idstudents,
           email: results[0].email,
         });
+
       }
     );
   },

@@ -111,8 +111,9 @@ module.exports = {
   },
 
   login: (req, res, next) => {
-    db.query(
-      `SELECT * FROM homeOwner WHERE email = ${db.escape(req.body.email)}`,
+
+    conn.query(
+      `SELECT * FROM homeOwner WHERE email = ${conn.escape(req.body.email)}`,
       (err, result) => {
         // user does not exists
         if (err) {
@@ -126,6 +127,7 @@ module.exports = {
         } else if (result[0].cookie === 0) {
           res.status(402).send("please activate your account");
         }
+
         // check password
         else {
           bcrypt.compare(
