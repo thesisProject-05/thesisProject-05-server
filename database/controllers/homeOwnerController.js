@@ -77,6 +77,7 @@ module.exports = {
 
   verifyCode: async (req, res) => {
     try {
+      console.log(req.body)
       db.query(
         `select * from homeOwner where email='${req.body.email}'`,
         (err, result) => {
@@ -105,7 +106,7 @@ module.exports = {
         }
       );
     } catch (error) {
-      res.status(400).send(error);
+      res.send(error.message);
     }
   },
 
@@ -155,7 +156,7 @@ module.exports = {
                 msg: "Username or password is incorrect!",
               });
             }
-          );
+          ); 
         }
       }
     );
