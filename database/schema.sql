@@ -5,19 +5,19 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema roostIt
+-- Schema tapHouse
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema roostIt
+-- Schema tapHouse
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `roostIt` DEFAULT CHARACTER SET utf8 ;
-USE `roostIt` ;
+CREATE SCHEMA IF NOT EXISTS `tapHouse` DEFAULT CHARACTER SET utf8 ;
+USE `tapHouse` ;
 
 -- -----------------------------------------------------
--- Table `roostIt`.`residence`
+-- Table `tapHouse`.`residence`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`residence` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`residence` (
   `idresidence` INT NOT NULL AUTO_INCREMENT,
   `photo` LONGTEXT NOT NULL,
   `name` VARCHAR(45) NULL,
@@ -32,9 +32,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `roostIt`.`university`
+-- Table `tapHouse`.`university`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`university` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`university` (
   `iduniversity` INT NOT NULL AUTO_INCREMENT,
   `universityName` VARCHAR(255) NOT NULL,
   `city` VARCHAR(255) NOT NULL,
@@ -46,9 +46,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `roostIt`.`homeOwner`
+-- Table `tapHouse`.`homeOwner`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`homeOwner` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`homeOwner` (
   `idhomeOwner` INT NOT NULL AUTO_INCREMENT,
   `fullName` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
@@ -67,9 +67,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `roostIt`.`house`
+-- Table `tapHouse`.`house`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`house` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`house` (
   `idhouse` INT NOT NULL,
   `photo` LONGTEXT NOT NULL,
   `description` VARCHAR(255) NULL,
@@ -84,16 +84,16 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`house` (
   INDEX `fk_house_homeOwner_idx` (`homeOwner_idhomeOwner` ASC) VISIBLE,
   CONSTRAINT `fk_house_homeOwner`
     FOREIGN KEY (`homeOwner_idhomeOwner`)
-    REFERENCES `roostIt`.`homeOwner` (`idhomeOwner`)
+    REFERENCES `tapHouse`.`homeOwner` (`idhomeOwner`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `roostIt`.`students`
+-- Table `tapHouse`.`students`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`students` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`students` (
   `idstudents` INT NOT NULL AUTO_INCREMENT,
   `fullName` VARCHAR(255) NULL,
   `dateOfBirth` VARCHAR(60) NULL,
@@ -118,26 +118,26 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`students` (
   INDEX `fk_students_house1_idx` (`house_idhouse` ASC) VISIBLE,
   CONSTRAINT `fk_students_residence1`
     FOREIGN KEY (`residence_idresidence`)
-    REFERENCES `roostIt`.`residence` (`idresidence`)
+    REFERENCES `tapHouse`.`residence` (`idresidence`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_students_university1`
     FOREIGN KEY (`university_iduniversity`)
-    REFERENCES `roostIt`.`university` (`iduniversity`)
+    REFERENCES `tapHouse`.`university` (`iduniversity`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_students_house1`
     FOREIGN KEY (`house_idhouse`)
-    REFERENCES `roostIt`.`house` (`idhouse`)
+    REFERENCES `tapHouse`.`house` (`idhouse`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `roostIt`.`studentsPosts`
+-- Table `tapHouse`.`studentsPosts`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`studentsPosts` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`studentsPosts` (
   `idposts` INT NOT NULL,
   `userName` VARCHAR(45) NOT NULL,
   `content` VARCHAR(255) NOT NULL,
@@ -146,16 +146,16 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`studentsPosts` (
   INDEX `fk_studentsPosts_students1_idx` (`students_idstudents` ASC) VISIBLE,
   CONSTRAINT `fk_studentsPosts_students1`
     FOREIGN KEY (`students_idstudents`)
-    REFERENCES `roostIt`.`students` (`idstudents`)
+    REFERENCES `tapHouse`.`students` (`idstudents`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `roostIt`.`homeOwnerPosts`
+-- Table `tapHouse`.`homeOwnerPosts`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`homeOwnerPosts` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`homeOwnerPosts` (
   `idhomeOwnerPosts` INT NOT NULL,
   `userName` VARCHAR(45) NOT NULL,
   `content` VARCHAR(255) NOT NULL,
@@ -164,16 +164,16 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`homeOwnerPosts` (
   INDEX `fk_homeOwnerPosts_homeOwner1_idx` (`homeOwner_idhomeOwner` ASC) VISIBLE,
   CONSTRAINT `fk_homeOwnerPosts_homeOwner1`
     FOREIGN KEY (`homeOwner_idhomeOwner`)
-    REFERENCES `roostIt`.`homeOwner` (`idhomeOwner`)
+    REFERENCES `tapHouse`.`homeOwner` (`idhomeOwner`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `roostIt`.`comments`
+-- Table `tapHouse`.`comments`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `roostIt`.`comments` (
+CREATE TABLE IF NOT EXISTS `tapHouse`.`comments` (
   `idcomments` INT NOT NULL,
   `content` VARCHAR(255) NOT NULL,
   `userName` VARCHAR(45) NOT NULL,
@@ -184,12 +184,12 @@ CREATE TABLE IF NOT EXISTS `roostIt`.`comments` (
   INDEX `fk_comments_students1_idx` (`students_idstudents` ASC) VISIBLE,
   CONSTRAINT `fk_comments_homeOwner1`
     FOREIGN KEY (`homeOwner_idhomeOwner`)
-    REFERENCES `roostIt`.`homeOwner` (`idhomeOwner`)
+    REFERENCES `tapHouse`.`homeOwner` (`idhomeOwner`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_comments_students1`
     FOREIGN KEY (`students_idstudents`)
-    REFERENCES `roostIt`.`students` (`idstudents`)
+    REFERENCES `tapHouse`.`students` (`idstudents`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
