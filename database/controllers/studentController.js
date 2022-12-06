@@ -10,7 +10,7 @@ module.exports = {
     // console.log(req.body);
     const { valid } = await isEmailValid(req.body.email);
     
-    console.log(res,'theres');
+    
     if (!valid) {
      console.log(valid,'valid'); 
       return res.status(400).send({
@@ -35,7 +35,7 @@ module.exports = {
           (err, result) => {
          
             if (result.length) {
-               console.log(result,"result");
+               
               return res
                 .status(409)
                 .send({ msg: "This student user is already in use!" });
@@ -68,9 +68,7 @@ module.exports = {
                       }
                       sendCode(activatingCode, req.body.email);
 
-                      res.json({
-                        text: "welcome to our platform.. please check your email",
-                      });
+                      res.json(result);
                     }
                   );
                 }
@@ -87,28 +85,30 @@ module.exports = {
   verifyCode: async (req, res) => {
     try {
    //find one Patient with his id as a filter
+  
      db.query(`select * from students where email='${req.body.email}'`,(err,result)=>{
-       if (result.length&&result[0].ValidatorCode === req.body.ValidatorCode) {
+       if (result.length && result[0].activationCode === req.body.activationCode) {
            db.query(`update students set cookie=1 where email='${req.body.email}'`,(error,result)=>{
-               error ? res.status(500).send(error) : res.status(200).send("thank you for joining our app") })
+               error ? res.status(500).send(error) : res.status(200).send(result.message) })
               }
-             else res.status(403).send("wrong code.. please re-check your email");
+             else res.send(result.message);
             });
-          } catch (error) { res.status(404).send(error);}
+          } catch (error) { res.status(404).send(error);} 
         },
 
 
   login: (req, res, next) => {
     db.query(
-      `SELECT * FROM STUDENTS WHERE email=${db.escape(req.body.email)}`,
+      `SELECT * FROM STUDENTS WHERE email = ${db.escape(req.body.email)}`,
       (err, result) => {
         if (err) {
-          return res.status(405).send({
+          return res.status(400).send({
             message: err,
           });
         }
+        // console.log(result);
         if (!result.length) {
-          return res.status(406).send({
+          return res.status(401).send({
             message:
               "invalid credentials please check your email or your password",
           });
@@ -116,8 +116,10 @@ module.exports = {
         bcrypt.compare(
           req.body.password,
           result[0]["password"],
+          console.log(result),
           (errB, resultB) => {
             if (resultB) {
+              console.log(resultB);
               const token = jwt.sign(
                 { idstudents: result[0].idstudents },
                 "abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
@@ -129,10 +131,7 @@ module.exports = {
               });
               return res.status(200).send(token);
             }
-            return res.status(407).send({
-              message:
-                "invalid credentials please check your email or your password",
-            });
+            return res.status(401).send(errB.message);
           }
         );
       }

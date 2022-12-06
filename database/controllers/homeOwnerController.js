@@ -87,7 +87,7 @@ module.exports = {
 
   login: (req, res, next) => {
     conn.query(
-      `SELECT * FROM homeOwner WHERE email = ${conn.escape(req.body.email)};`,
+      `SELECT * FROM homeOwner WHERE email = ${conn.escape(req.body.email)}`,
       (err, result) => {
         if (err) {
           return res.status(400).send({
@@ -101,7 +101,7 @@ module.exports = {
         }
         bcrypt.compare(
           req.body.password,
-          result[0]["password"],
+          result[0]["password"],console.log(result),
           (errB, resultB) => {
             if (resultB) {
               console.log(resultB);
