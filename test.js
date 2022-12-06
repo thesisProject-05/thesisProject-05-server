@@ -1,34 +1,59 @@
-const conn = require("../index.js");
-const dotenv = require("dotenv");
-const owner = require("../models/homeOwnerModel.js");
+require("dotenv").config();
+const { check } = require("express-validator");
 const bcrypt = require("bcrypt");
+const db = require("../database/index");
 const jwt = require("jsonwebtoken");
-const { sendEmail, sendCode } = require("./email.js");
-const { isEmailValid } = require("../../utils/emailValidator.js");
-
+const nodemailer = require("nodemailer");
+const emailValidator = require("deep-email-validator");
+async function isEmailValid(email) {
+  return emailValidator.validate(email);
+}
+var transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "snaporder.p@gmail.com",
+    pass: `${process.env.EMAIL_PASSWORD}`,
+  },
+});
+const send = (text, email, subject) => {
+  transporter.sendMail(
+    {
+      from: "snaporder.p@gmail.com",
+      to: `${email}`,
+      subject: `${subject}`,
+      html: `${text}`,
+    },
+    function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    }
+  );
+};
 module.exports = {
   register: async (req, res, next) => {
-    console.log(req.body);
     const { valid } = await isEmailValid(req.body.email);
-    // console.log(res,'theres');
     if (!valid) {
-      console.log(valid, "<===valid");
       return res.status(400).send({
-        message: "Please enter a valid email address.",
+        message: "Please provide a valid email address.",
       });
     }
     try {
       //generating the activation code
       const characters =
         "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      let activatingCode = "";
+      let activationCode = "";
       for (let i = 0; i <= 6; i++) {
-        activatingCode +=
+        activationCode +=
           characters[Math.floor(Math.random() * characters.length)];
       }
-      // the homeOwner creation
-      conn.query(
-        `SELECT * FROM homeOwner WHERE LOWER(email) = LOWER(${conn.escape(
+      // creating the Resto account
+      db.query(
+        `SELECT * FROM manger WHERE LOWER(email) = LOWER(${db.escape(
           req.body.email
         )});`,
         (err, result) => {
@@ -43,25 +68,28 @@ module.exports = {
                   msg: err,
                 });
               } else {
-                conn.query(
-                  `INSERT INTO homeOwner SET fullName='${
-                    req.body.fullName
-                  }', email=${conn.escape(
-                    req.body.email
-                  )},password=${conn.escape(hash)}, dateOfBirth='${
-                    req.body.dateOfBirth
-                  }',phoneNumber='${req.body.phoneNumber}}', city='${
-                    req.body.city
-                  }',cin='${req.body.cin}',photo='${
-                    req.body.photo
-                  }',activationCode=${conn.escape(activatingCode)},cookie=0`,
+                // has hashed pw => add to database
+                db.query(
+                  `INSERT INTO manger set restoname='${
+                    req.body.restoname
+                  }', email= ${db.escape(req.body.email)}, password=${db.escape(
+                    hash
+                  )},ValidatorCode=${db.escape(activationCode)},activated=0`,
                   (err, result) => {
                     if (err) {
-                      return res.status(401).send(err);
+                      return res.status(400).send(err);
                     }
-                    sendCode(activatingCode, req.body.email);
-
-                    res.json(result);
+                    send(
+                      `<h1> Confirmation of your Registration </h1>
+        <h2> Welcome To SnapOrder App </h2>
+        <p>  Please enter the code below to activate your account: </p>
+        <a>Your Secret code is: "${activationCode}"</a>`,
+                      req.body.email,
+                      "activation code"
+                    );
+                    return res.status(201).send({
+                      msg: "The user has been registerd with us!",
+                    });
                   }
                 );
               }
@@ -71,34 +99,36 @@ module.exports = {
       );
     } catch (error) {
       console.log(error);
-      res.status(401).send("you have an error");
+      res.status(400).send("you have error");
     }
   },
 
   verifyCode: async (req, res) => {
     try {
-      console.log(req.body)
+      //find one Patient with his id as a filter
       db.query(
-        `select * from homeOwner where email='${req.body.email}'`,
+        `select * from manger where email='${req.body.email}'`,
         (err, result) => {
           const token = jwt.sign(
-            { idhomeOwner: result[0].idhomeOwner },
+            { idmanger: result[0].idmanger },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: "24h" }
           );
           if (
             result.length &&
-            result[0].activationCode === req.body.activationCode
+            result[0].ValidatorCode === req.body.ValidatorCode
           ) {
             db.query(
-              `update homeOwner set cookie=1 where email='${req.body.email}'`,
+              `update manger set activated=1 where email='${req.body.email}'`,
               (errr, result1) => {
                 errr
                   ? res.status(500).send(errr)
-                  : res.status(200).cookie("thetoken", token, {
-                      httpOnly: false,
-                      maxAge: 24 * 60 * 60 * 1000,
-                    });
+                  : res
+                      .status(200)
+                      .cookie("thetoken", token, {
+                        httpOnly: false,
+                        maxAge: 24 * 60 * 60 * 1000,
+                      });
                 return res.status(200).send(token);
               }
             );
@@ -106,13 +136,14 @@ module.exports = {
         }
       );
     } catch (error) {
-      res.send(error.message);
+      res.status(400).send(error);
     }
   },
-
   login: (req, res, next) => {
     db.query(
-      `SELECT * FROM homeOwner WHERE email = ${db.escape(req.body.email)}`,
+      `SELECT * FROM students WHERE email = ${db.escape(
+        req.body.email
+      )}`,
       (err, result) => {
         // user does not exists
         if (err) {
@@ -140,8 +171,8 @@ module.exports = {
               }
               if (bResult) {
                 const token = jwt.sign(
-                  { idhomeOwner: result[0].idhomeOwner },
-                   process.env.ACCESS_TOKEN_SECRET,
+                  { idstudents: result[0].idstudents },
+                  process.env.ACCESS_TOKEN_SECRET,
                   { expiresIn: "24h" }
                 );
                 res
@@ -156,7 +187,7 @@ module.exports = {
                 msg: "Username or password is incorrect!",
               });
             }
-          ); 
+          );
         }
       }
     );
@@ -174,64 +205,40 @@ module.exports = {
     const theToken = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(theToken, process.env.ACCESS_TOKEN_SECRET);
     db.query(
-      "SELECT * FROM homeOwner where idhomeOwner=?",
-      decoded.idhomeOwner,
-      function (error, results) {
+      "SELECT * FROM manger where idmanger=?",
+      decoded.idmanger,
+      function (error, results, fields) {
         if (error) throw error;
         return res.send({
-          fullName: results[0].fullName,
-          id: results[0].idhomeOwner,
+          restoname: results[0].restoname,
+          id: results[0].idmanger,
           email: results[0].email,
         });
       }
     );
   },
-
-
-
-  getOneOwnerByPhoneNumber: (req, res) => {
-    owner.getOneOwnerByPhoneNumber(
-      (err, results) => {
-        err ? res.send(err.message) : res.json(results);
-      },
-      [req.body.phoneNumber]
-    );
-  },
-
-  getOwnerByEmail: (req, res) => {
-    owner.getOwnerByEmail((err, results) => {
-      err ? res.status(509).send(err) : res.status(201).json(results);
-    }, req.body);
-  },
-  getHomeOwnerById: (req, res) => {
-    owner.getHomeOwnerById((err, results) => {
-      err ? res.send(err.message) : res.json(results);
-    }, req.params.id);
-  },
-
-  getOwnerByCity: (req, res) => {
-    owner.getOwnerByCity(
-      (err, results) => {
-        err ? res.send(err.message) : res.json(results);
-      },
-      [req.body.city]
-    );
-  },
-
-  getAllOwners: (req, res) => {
-    owner.getAllOwners((err, results) => {
-      err ? res.status(500).send(err.message) : res.status(200).json(results);
-    });
-  },
-
-  deleteHomeOwner: (req, res) => {
-    owner.deleteHomeOwner((err, results) => {
-      err ? res.json(err.message) : res.json("homeOwner deleted");
-    }, req.params.id);
-  },
-
   logout: (req, res) => {
     res.clearCookie("thetoken");
     return res.sendStatus(200);
+  },
+  modifieP: (req, res) => {
+    try {
+      var pas;
+      const hashed = bcrypt.hashSync(req.body.password, 10, (err, hash) => {
+        console.log(err);
+        err ? res.status(500).send({ msg: err }) : hash;
+      });
+      sql = `update manger set password="${hashed}" where iduser=${req.body.id}`;
+      db.query(sql, (err, result) => {
+        if (err) {
+          return res.status(400).send(err);
+        } else {
+          return res.status(200).json(result);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "server error" });
+    }
   },
 };

@@ -1,23 +1,20 @@
 const students = require("../models/studentModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const db = require("../index");
+const db = require("../index.js");
 const { sendEmail, sendCode } = require("./email.js");
 const { isEmailValid } = require("../../utils/emailValidator.js");
 module.exports = {
   register: async (req, res, next) => {
-    // console.log(res);
-    // console.log(req.body);
+    console.log(req.body);
     const { valid } = await isEmailValid(req.body.email);
-    
-    console.log(res,'theres');
     if (!valid) {
-     console.log(valid,'valid'); 
+      console.log(valid,'<===valid'); 
       return res.status(400).send({
         message: "Please enter a valid email address.",
       })
       
-    } else {
+    } 
       try {
         //generating the activation code
         const characters =
@@ -33,12 +30,10 @@ module.exports = {
             req.body.email
           )});`,
           (err, result) => {
-         
             if (result.length) {
-               console.log(result,"result");
-              return res
-                .status(409)
-                .send({ msg: "This student user is already in use!" });
+               return res
+               .status(409)
+               .send({ msg: "This user is already in use!" });
             } else {
               bcrypt.hash(req.body.password, 10, (err, hash) => {
                 if (err) {
@@ -57,20 +52,16 @@ module.exports = {
                       req.body.gender
                     }',city='${req.body.city}',cin='${req.body.cin}',photo='${
                       req.body.photo
-                    }',rentePeriode='${
-                      req.body.rentePeriode
                     }',maxBudget='${
                       req.body.maxBudget
                     }',activationCode=${db.escape(activatingCode)},cookie=0`,
                     (err, result) => {
                       if (err) {
-                        return res.status(401).send(err);
+                        return res.send(err);
                       }
-                      sendCode(activatingCode, req.body.email);
+                     else{ sendCode( activatingCode, req.body.email);
 
-                      res.json({
-                        text: "welcome to our platform.. please check your email",
-                      });
+                      res.json(result);}
                     }
                   );
                 }
@@ -79,65 +70,146 @@ module.exports = {
           }
         );
       } catch (error) {
-        // console.log(error.message);
-        res.status(402).send("you have an error");
+        console.log(error.message);
+        res.send("you have an error");
       }
-    }
   },
+  // verifyCode: async (req, res) => {
+  //   console.log(req.body, req.params,"hhhh");
+  //   try {
+  // console.log("try");
+  //    db.query(`select * from students where email='${req.params.email}'`,
+  //    (err,result)=>{
+  //     const token = jwt.sign(
+  //       { idstudents: result[0].idstudents },
+  //       process.env.ACCESS_TOKEN_SECRET,
+  //       { expiresIn: "24h" }
+  //     );
+  //      if (
+  //       result.length &&
+  //        result[0].activationCode === req.body.activationCode) {
+  //       console.log('hhhh')
+  //          db.query(`update students set cookie=1 where email='${req.params.email}'`,
+  //          (error,result)=>{
+  //              error ? res.send(error) : res.status(200).send(result.message) })
+  //             }
+  //            else res.send(err.message);
+  //           });
+  //         } catch (error) { res.send(error);} 
+  //       
   verifyCode: async (req, res) => {
     try {
-   //find one Patient with his id as a filter
-     db.query(`select * from students where email='${req.body.email}'`,(err,result)=>{
-       if (result.length&&result[0].ValidatorCode === req.body.ValidatorCode) {
-           db.query(`update students set cookie=1 where email='${req.body.email}'`,(error,result)=>{
-               error ? res.status(500).send(error) : res.status(200).send("thank you for joining our app") })
+      db.query(
+        `select * from students where email='${req.body.email}'`,
+        (err, result) => {
+          const token = jwt.sign(
+            { idstudents: result[0].idstudents },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: "24h" }
+          );
+          if (
+            result.length &&
+            result[0].activationCode === req.body.activationCode
+          ) {
+            db.query(
+              `update students set cookie=1 where email='${req.body.email}'`,
+              (errr, result1) => {
+                errr
+                  ? res.status(500).send(errr)
+                  : res
+                      .status(200)
+                      .cookie("thetoken", token, {
+                        httpOnly: false,
+                        maxAge: 24 * 60 * 60 * 1000,
+                      });
+                return res.status(200).send(token);
               }
-             else res.status(403).send("wrong code.. please re-check your email");
-            });
-          } catch (error) { res.status(404).send(error);}
-        },
-
+            );
+          } else res.status(402).send("incorrect Code");
+        }
+      );
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  },
 
   login: (req, res, next) => {
     db.query(
-      `SELECT * FROM STUDENTS WHERE email=${db.escape(req.body.email)}`,
+      `SELECT * FROM students WHERE email = ${db.escape(req.body.email)}`,
       (err, result) => {
+        // user does not exists
         if (err) {
-          return res.status(405).send({
-            message: err,
+          return res.status(400).send({
+            msg: err,
           });
-        }
-        if (!result.length) {
-          return res.status(406).send({
-            message:
-              "invalid credentials please check your email or your password",
+        } else if (!result.length) {
+          return res.status(401).send({
+            msg: "Email or password is incorrect!",
           });
+        } else if (result[0].cookie === 0) {
+          res.status(402).send("please activate your account");
         }
-        bcrypt.compare(
-          req.body.password,
-          result[0]["password"],
-          (errB, resultB) => {
-            if (resultB) {
-              const token = jwt.sign(
-                { idstudents: result[0].idstudents },
-                "abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-                { expiresIn: "24h" }
-              );
-              res.cookie("amToken", token, {
-                httpOnly: false,
-                maxAge: 24 * 60 * 60 * 1000,
+        // check password
+        else {
+          bcrypt.compare(
+            req.body.password,
+            result[0]["password"],
+            (bErr, bResult) => {
+              // wrong password
+              if (bErr) {
+                return res.status(401).send({
+                  msg: "Email or password is incorrect!",
+                });
+              }
+              if (bResult) {
+                const token = jwt.sign(
+                  { idstudents: result[0].idstudents },
+                  process.env.ACCESS_TOKEN_SECRET,
+                  { expiresIn: "24h" }
+                );
+                res
+                  .status(200)
+                  .cookie("thetoken", token, {
+                    httpOnly: false,
+                    maxAge: 24 * 60 * 60 * 1000,
+                  });
+                return res.status(200).send(token);
+              }
+              return res.status(401).send({
+                msg: "Username or password is incorrect!",
               });
-              return res.status(200).send(token);
             }
-            return res.status(407).send({
-              message:
-                "invalid credentials please check your email or your password",
-            });
-          }
-        );
+          );
+        }
       }
     );
   },
+  getUser: (req, res, next) => {
+    if (
+      !req.headers.authorization ||
+      !req.headers.authorization.startsWith("Bearer") ||
+      !req.headers.authorization.split(" ")[1]
+    ) {
+      return res.status(422).json({
+        message: "Please provide the token",
+      });
+    }
+    const theToken = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(theToken, process.env.ACCESS_TOKEN_SECRET);
+    db.query(
+      "SELECT * FROM students where idstudents=?",
+      decoded.idstudents,
+      function (error, results) {
+        if (error) throw error;
+        return res.send({
+          fullName: results[0].fullName,
+          id: results[0].idstudents,
+          email: results[0].email,
+        });
+      }
+    );
+  },
+
   getAll: (req, res) => {
     students.getAll((error, results) => {
       error ? res.status(500).send(error) : res.status(200).json(results);
@@ -178,4 +250,9 @@ module.exports = {
       error ? res.status(500).send(error) : res.status(200).json(results);
     });
   },
+  logout: (req, res) => {
+    res.clearCookie("thetoken");
+    return res.sendStatus(200);
+  }
+
 };

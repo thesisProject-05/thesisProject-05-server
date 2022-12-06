@@ -1,10 +1,11 @@
 const mysql=require('mysql2')
 
 const config={
-    host:"localhost",
-    user:"root",
-    password:"12345",
-    database:'roostIt',
+    host:"mysql-99069-0.cloudclusters.net",
+    user:"admin",
+    password:"jiYX2FYO",
+    database:'tapHouse',
+    port: 19144
 
 }
 
@@ -13,7 +14,7 @@ connection.connect((err)=>{
     if(err){
         console.log(err)
     }
-    console.log('database connected ');
+    console.log('database connected');
 })
 
-module.exports= connection;
+module.exports= connection;  
